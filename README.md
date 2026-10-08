@@ -1,6 +1,6 @@
 # Webhook Manager
 
-Frontend test task built with React, TypeScript strict mode, Vite, and MSW. In development, MSW simulates the API entirely in memory.
+Frontend test task built with React, TypeScript strict mode, Vite, and MSW. MSW simulates the API entirely in memory in both local and deployed demo builds.
 
 The API client validates successful responses and API error bodies at runtime with Zod. Run the project with Node.js 22.12 or newer.
 

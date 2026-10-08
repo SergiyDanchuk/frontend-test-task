@@ -5,7 +5,7 @@ import {
 } from './schemas';
 import type { ApiErrorBody } from '../types';
 
-const API_URL = '/';
+const API_URL = import.meta.env.BASE_URL;
 
 export class ApiError extends Error {
   constructor(
