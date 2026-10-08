@@ -53,7 +53,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
-        <a className="brand login-brand" href="/" aria-label="Webhook Manager">
+        <a
+          className="brand login-brand"
+          href={import.meta.env.BASE_URL}
+          aria-label="Webhook Manager"
+        >
           <span className="brand-mark">W</span> Webhook Manager
         </a>
 

@@ -30,7 +30,11 @@ export function WebhookListView({
   return (
     <main className="shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Webhook Manager — головна">
+        <a
+          className="brand"
+          href={import.meta.env.BASE_URL}
+          aria-label="Webhook Manager — головна"
+        >
           <span className="brand-mark">W</span> Webhook Manager
         </a>
         <button className="text-button" type="button" onClick={onLogout}>
