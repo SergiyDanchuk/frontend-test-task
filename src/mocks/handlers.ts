@@ -11,6 +11,7 @@ import {
 const CSRF = 'fixed-csrf-token';
 const EMAIL = 'admin@example.com';
 const PASSWORD = 'Password123!';
+const API_BASE = import.meta.env.BASE_URL;
 const deviceTokens = new Map<string, { fingerprint: string; email: string }>();
 let session: {
   fingerprint: string;
@@ -87,14 +88,14 @@ function unauthorized() {
 
 export const handlers = [
   http.get(
-    '/csrf',
+    `${API_BASE}csrf`,
     () =>
       new HttpResponse(null, {
         status: 204,
         headers: { 'X-CSRF-TOKEN': CSRF },
       }),
   ),
-  http.post('/auth/login', async ({ request }) => {
+  http.post(`${API_BASE}auth/login`, async ({ request }) => {
     if (!csrf(request))
       return error(419, 'TokenMismatchException', 'CSRF token mismatch.');
 
@@ -126,7 +127,7 @@ export const handlers = [
     });
     return HttpResponse.json({ device_session_token: token });
   }),
-  http.post('/auth/token/issue', async ({ request }) => {
+  http.post(`${API_BASE}auth/token/issue`, async ({ request }) => {
     if (!csrf(request))
       return error(419, 'TokenMismatchException', 'CSRF token mismatch.');
 
@@ -151,7 +152,7 @@ export const handlers = [
     session = { ...token, expiresAt: Date.now() + 30_000, active: true };
     return new HttpResponse(null, { status: 200 });
   }),
-  http.post('/auth/token/rotate', async ({ request }) => {
+  http.post(`${API_BASE}auth/token/rotate`, async ({ request }) => {
     if (!csrf(request))
       return error(419, 'TokenMismatchException', 'CSRF token mismatch.');
 
@@ -167,7 +168,7 @@ export const handlers = [
     session.expiresAt = Date.now() + 30_000;
     return new HttpResponse(null, { status: 200 });
   }),
-  http.post('/auth/token/revoke', async ({ request }) => {
+  http.post(`${API_BASE}auth/token/revoke`, async ({ request }) => {
     if (!csrf(request))
       return error(419, 'TokenMismatchException', 'CSRF token mismatch.');
 
@@ -177,12 +178,12 @@ export const handlers = [
       session.active = false;
     return new HttpResponse(null, { status: 204 });
   }),
-  http.get('/v1/me', () => {
+  http.get(`${API_BASE}v1/me`, () => {
     if (!authorized() || !session) return unauthorized();
     const user = users.get(session.email);
     return user ? HttpResponse.json(user) : unauthorized();
   }),
-  http.get('/v1/webhooks', ({ request }) => {
+  http.get(`${API_BASE}v1/webhooks`, ({ request }) => {
     if (!authorized()) return unauthorized();
     const url = new URL(request.url);
     const page = Math.max(1, Number(url.searchParams.get('page') ?? 1));
@@ -205,7 +206,7 @@ export const handlers = [
       },
     });
   }),
-  http.get('/v1/webhooks/:id', ({ params }) => {
+  http.get(`${API_BASE}v1/webhooks/:id`, ({ params }) => {
     if (!authorized()) return unauthorized();
     const webhook = webhooks.find((item) => item.id === params.id);
 
@@ -213,7 +214,7 @@ export const handlers = [
       ? HttpResponse.json(webhook)
       : error(404, 'NotFoundException', 'Webhook not found.');
   }),
-  http.put('/v1/webhooks/:id', async ({ request, params }) => {
+  http.put(`${API_BASE}v1/webhooks/:id`, async ({ request, params }) => {
     if (!csrf(request))
       return error(419, 'TokenMismatchException', 'CSRF token mismatch.');
     if (!authorized()) return unauthorized();
