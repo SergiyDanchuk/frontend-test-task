@@ -33,6 +33,14 @@ Format the source with `npm run format` and check formatting with `npm run forma
 - Protected requests share one in-flight token rotation after a 401 and retry once. A failed rotation ends the local session.
 - Reloading the page can require signing in again because the mock session is memory-only.
 
+## Key implementation decisions
+
+- React with strict TypeScript keeps UI components and request data contracts explicit.
+- MSW provides a self-contained in-memory API, so the hosted preview works without a backend.
+- Zod validates API responses at runtime; invalid payloads are treated as contract errors.
+- Search and pagination are reflected in the URL, so list state can be refreshed or shared.
+- Concurrent 401 responses share one token rotation, and each failed request retries only once.
+
 ## Scope and known limitations
 
 The authentication flow, in-memory API mock, webhook list with URL-backed pagination and search, and webhook editing are implemented.
